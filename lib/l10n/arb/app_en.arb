@@ -19,5 +19,9 @@
     "puzzleCompleted": "Well done. Congrats!",
     "@puzzleCompleted": {
         "description": "Shown as the success state when the puzzle is completed"
+    },
+    "timeElapsed": "Time elapsed",
+    "@timeElapsed": {
+        "description": "Shown as the time elapsed"
     }
 }

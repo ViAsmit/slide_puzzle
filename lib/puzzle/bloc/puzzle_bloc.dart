@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:very_good_slide_puzzle/models/models.dart';
+import 'package:very_good_slide_puzzle/timer/timer.dart';
 
 part 'puzzle_event.dart';
 part 'puzzle_state.dart';
@@ -16,7 +17,7 @@ class PuzzleBloc extends Bloc<PuzzleEvent, PuzzleState> {
     on<PuzzleReset>(_onPuzzleReset);
   }
 
-  final int _size;
+  int _size;
 
   final Random? random;
 
@@ -74,7 +75,8 @@ class PuzzleBloc extends Bloc<PuzzleEvent, PuzzleState> {
   }
 
   void _onPuzzleReset(PuzzleReset event, Emitter<PuzzleState> emit) {
-    final puzzle = _generatePuzzle(_size);
+    _size = event.size;
+    final puzzle = _generatePuzzle(event.size);
     emit(
       PuzzleState(
         puzzle: puzzle.sort(),

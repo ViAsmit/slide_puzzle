@@ -7,6 +7,8 @@ import 'package:very_good_slide_puzzle/layout/layout.dart';
 import 'package:very_good_slide_puzzle/models/models.dart';
 import 'package:very_good_slide_puzzle/puzzle/puzzle.dart';
 import 'package:very_good_slide_puzzle/theme/theme.dart';
+import 'package:very_good_slide_puzzle/theme/widgets/timer_widget.dart';
+import 'package:very_good_slide_puzzle/timer/timer.dart';
 import 'package:very_good_slide_puzzle/typography/typography.dart';
 
 /// {@template simple_puzzle_layout_delegate}
@@ -18,7 +20,7 @@ class SimplePuzzleLayoutDelegate extends PuzzleLayoutDelegate {
   const SimplePuzzleLayoutDelegate();
 
   @override
-  Widget startSectionBuilder(PuzzleState state) {
+  Widget startSectionBuilder(PuzzleState state, TimerState timerState) {
     return ResponsiveLayoutBuilder(
       small: (_, child) => child!,
       medium: (_, child) => child!,
@@ -26,7 +28,7 @@ class SimplePuzzleLayoutDelegate extends PuzzleLayoutDelegate {
         padding: const EdgeInsets.only(left: 50, right: 32),
         child: child,
       ),
-      child: (_) => SimpleStartSection(state: state),
+      child: (_) => SimpleStartSection(state: state, timerState: timerState),
     );
   }
 
@@ -173,20 +175,24 @@ class SimpleStartSection extends StatelessWidget {
   const SimpleStartSection({
     Key? key,
     required this.state,
+    required this.timerState,
   }) : super(key: key);
 
   /// The state of the puzzle.
   final PuzzleState state;
+  // The state of the timer.
+  final TimerState timerState;
 
   @override
   Widget build(BuildContext context) {
+    var isSelected = <bool>[true, false, false];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const ResponsiveGap(
-          small: 20,
-          medium: 83,
-          large: 151,
+          small: 10,
+          medium: 41,
+          large: 75,
         ),
         const PuzzleName(),
         const ResponsiveGap(large: 16),
@@ -198,9 +204,19 @@ class SimpleStartSection extends StatelessWidget {
           medium: 16,
           large: 32,
         ),
+        const SimpleDifficultyToggle(),
+        const ResponsiveGap(
+          small: 12,
+          medium: 16,
+          large: 32,
+        ),
         NumberOfMovesAndTilesLeft(
           numberOfMoves: state.numberOfMoves,
           numberOfTilesLeft: state.numberOfTilesLeft,
+        ),
+        const ResponsiveGap(large: 32),
+        TimerWidget(
+          time: timerState.secondsElapsed,
         ),
         const ResponsiveGap(large: 32),
         ResponsiveLayoutBuilder(
@@ -209,6 +225,65 @@ class SimpleStartSection extends StatelessWidget {
           large: (_, __) => const SimplePuzzleShuffleButton(),
         ),
       ],
+    );
+  }
+}
+
+class SimpleDifficultyToggle extends StatefulWidget {
+  const SimpleDifficultyToggle({Key? key}) : super(key: key);
+
+  @override
+  _SimpleDifficultyToggleState createState() => _SimpleDifficultyToggleState();
+}
+
+class _SimpleDifficultyToggleState extends State<SimpleDifficultyToggle> {
+  List<bool> isSelected = [true, false, false];
+  @override
+  Widget build(BuildContext context) {
+    return ResponsiveLayoutBuilder(
+      small: (context, child) => Center(child: child),
+      medium: (context, child) => Center(child: child),
+      large: (context, child) => child!,
+      child: (_) => ToggleButtons(
+        borderRadius: BorderRadius.circular(8),
+        onPressed: (int index) {
+          setState(() {
+            isSelected = List<bool>.filled(3, false);
+            isSelected[index] = !isSelected[index];
+          });
+          context.read<PuzzleBloc>().add(PuzzleReset(size: 3 + index));
+        },
+        isSelected: isSelected,
+        children: const [
+          SimpleDifficultyButton(),
+          SimpleDifficultyButton(text: '4 x 4'),
+          SimpleDifficultyButton(text: '5 x 5'),
+        ],
+      ),
+    );
+  }
+}
+
+/// {@template simple_puzzle_title}
+/// Displays the title of the puzzle based on [status].
+///
+/// Shows the success state when the puzzle is completed,
+/// otherwise defaults to the Puzzle Challenge title.
+/// {@endtemplate}
+@visibleForTesting
+class SimpleDifficultyButton extends StatelessWidget {
+  /// {@macro simple_start_section}
+  const SimpleDifficultyButton({Key? key, this.text = '3 x 3'})
+      : super(key: key);
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 30),
+      ),
     );
   }
 }
@@ -342,7 +417,12 @@ class SimplePuzzleTile extends StatelessWidget {
         ),
       ),
       onPressed: state.puzzleStatus == PuzzleStatus.incomplete
-          ? () => context.read<PuzzleBloc>().add(TileTapped(tile))
+          ? () {
+              if (state.numberOfMoves == 0) {
+                context.read<TimerBloc>().add(const TimerStarted());
+              }
+              context.read<PuzzleBloc>().add(TileTapped(tile));
+            }
           : null,
       child: Text(tile.value.toString()),
     );

@@ -9,6 +9,7 @@ import 'package:very_good_slide_puzzle/layout/simple_puzzle_layout_delegate.dart
 import 'package:very_good_slide_puzzle/models/models.dart';
 import 'package:very_good_slide_puzzle/puzzle/puzzle.dart';
 import 'package:very_good_slide_puzzle/theme/theme.dart';
+import 'package:very_good_slide_puzzle/timer/timer.dart';
 
 import '../helpers/helpers.dart';
 

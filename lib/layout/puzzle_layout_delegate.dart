@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:very_good_slide_puzzle/models/models.dart';
 import 'package:very_good_slide_puzzle/puzzle/puzzle.dart';
+import 'package:very_good_slide_puzzle/timer/timer.dart';
 
 /// {@template puzzle_layout_delegate}
 /// A delegate for computing the layout of the puzzle UI.
@@ -18,7 +19,7 @@ abstract class PuzzleLayoutDelegate extends Equatable {
   /// on a desktop.
   /// - the top side of the puzzle UI (above the puzzle board)
   /// on a tablet/mobile.
-  Widget startSectionBuilder(PuzzleState state);
+  Widget startSectionBuilder(PuzzleState state, TimerState timerState);
 
   /// A widget builder for the end section of the puzzle based on
   /// the puzzle [state].

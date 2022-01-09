@@ -12,13 +12,13 @@ class SimpleTheme extends PuzzleTheme {
   const SimpleTheme() : super();
 
   @override
-  String get name => 'Simple';
+  String get name => 'Complex';
 
   @override
-  bool get hasTimer => false;
+  bool get hasTimer => true;
 
   @override
-  bool get hasCountdown => false;
+  bool get hasCountdown => true;
 
   @override
   Color get backgroundColor => PuzzleColors.white;

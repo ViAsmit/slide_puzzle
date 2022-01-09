@@ -50,9 +50,10 @@ class PuzzleView extends StatelessWidget {
           ticker: const Ticker(),
         ),
         child: BlocProvider(
-          create: (context) => PuzzleBloc(4)
+          create: (context) => PuzzleBloc(3)
             ..add(
               PuzzleInitialized(
+                size: 3,
                 shufflePuzzle: shufflePuzzle,
               ),
             ),
@@ -176,18 +177,19 @@ class _PuzzleSections extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
     final state = context.select((PuzzleBloc bloc) => bloc.state);
+    final timerState = context.select((TimerBloc bloc) => bloc.state);
 
     return ResponsiveLayoutBuilder(
       small: (context, child) => Column(
         children: [
-          theme.layoutDelegate.startSectionBuilder(state),
+          theme.layoutDelegate.startSectionBuilder(state, timerState),
           const PuzzleBoard(),
           theme.layoutDelegate.endSectionBuilder(state),
         ],
       ),
       medium: (context, child) => Column(
         children: [
-          theme.layoutDelegate.startSectionBuilder(state),
+          theme.layoutDelegate.startSectionBuilder(state, timerState),
           const PuzzleBoard(),
           theme.layoutDelegate.endSectionBuilder(state),
         ],
@@ -196,7 +198,7 @@ class _PuzzleSections extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: theme.layoutDelegate.startSectionBuilder(state),
+            child: theme.layoutDelegate.startSectionBuilder(state, timerState),
           ),
           const PuzzleBoard(),
           Expanded(
