@@ -3,6 +3,7 @@ import 'package:very_good_slide_puzzle/dashatar/dashatar.dart';
 import 'package:very_good_slide_puzzle/layout/layout.dart';
 import 'package:very_good_slide_puzzle/models/models.dart';
 import 'package:very_good_slide_puzzle/puzzle/puzzle.dart';
+import 'package:very_good_slide_puzzle/timer/timer.dart';
 
 /// {@template dashatar_puzzle_layout_delegate}
 /// A delegate for computing the layout of the puzzle UI
@@ -13,7 +14,7 @@ class DashatarPuzzleLayoutDelegate extends PuzzleLayoutDelegate {
   const DashatarPuzzleLayoutDelegate();
 
   @override
-  Widget startSectionBuilder(PuzzleState state) {
+  Widget startSectionBuilder(PuzzleState state, TimerState timeState) {
     return ResponsiveLayoutBuilder(
       small: (_, child) => child!,
       medium: (_, child) => child!,

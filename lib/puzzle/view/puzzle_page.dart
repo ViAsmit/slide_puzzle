@@ -94,7 +94,7 @@ class PuzzleView extends StatelessWidget {
                 ),
               ),
               BlocProvider(
-                create: (context) => PuzzleBloc(4)
+                create: (context) => PuzzleBloc(3)
                   ..add(
                     PuzzleInitialized(
                       size: 3,
