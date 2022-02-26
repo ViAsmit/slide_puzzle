@@ -6,6 +6,7 @@ import 'package:very_good_slide_puzzle/l10n/l10n.dart';
 import 'package:very_good_slide_puzzle/layout/layout.dart';
 import 'package:very_good_slide_puzzle/models/models.dart';
 import 'package:very_good_slide_puzzle/puzzle/puzzle.dart';
+import 'package:very_good_slide_puzzle/simple/simple.dart';
 import 'package:very_good_slide_puzzle/theme/theme.dart';
 import 'package:very_good_slide_puzzle/theme/widgets/timer_widget.dart';
 import 'package:very_good_slide_puzzle/timer/timer.dart';
@@ -194,7 +195,9 @@ class SimpleStartSection extends StatelessWidget {
           medium: 41,
           large: 75,
         ),
-        const PuzzleName(),
+        PuzzleName(
+          key: puzzleNameKey,
+        ),
         const ResponsiveGap(large: 16),
         SimplePuzzleTitle(
           status: state.puzzleStatus,
@@ -211,6 +214,7 @@ class SimpleStartSection extends StatelessWidget {
           large: 32,
         ),
         NumberOfMovesAndTilesLeft(
+          key: numberOfMovesAndTilesLeftKey,
           numberOfMoves: state.numberOfMoves,
           numberOfTilesLeft: state.numberOfTilesLeft,
         ),
@@ -302,12 +306,13 @@ class SimplePuzzleTitle extends StatelessWidget {
     required this.status,
   }) : super(key: key);
 
-  /// The state of the puzzle.
+  /// The status of the puzzle.
   final PuzzleStatus status;
 
   @override
   Widget build(BuildContext context) {
     return PuzzleTitle(
+      key: puzzleTitleKey,
       title: status == PuzzleStatus.complete
           ? context.l10n.puzzleCompleted
           : context.l10n.puzzleChallengeTitle,
@@ -424,7 +429,14 @@ class SimplePuzzleTile extends StatelessWidget {
               context.read<PuzzleBloc>().add(TileTapped(tile));
             }
           : null,
-      child: Text(tile.value.toString()),
+      child: Text(
+        tile.value.toString(),
+        semanticsLabel: context.l10n.puzzleTileLabelText(
+          tile.value.toString(),
+          tile.currentPosition.x.toString(),
+          tile.currentPosition.y.toString(),
+        ),
+      ),
     );
   }
 }
